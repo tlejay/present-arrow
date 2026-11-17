@@ -8,3 +8,8 @@ hold **⌥ Option** and move the mouse → an arrow is drawn from where Option w
 - Overlay = one transparent click-through window per screen, level `.screenSaver`
 - Only pure Option triggers (⌥+⌘/⌃/⇧ ignored); arrow appears after the mouse moves ≥12pt so ⌥ typing shortcuts don't flash it
 - Settings (UserDefaults, bundle id `com.madebytle.presentarrow`): enabled, color, thickness, Open at Login (SMAppService)
+
+## Public repo + README
+
+- Public: github.com/tlejay/present-arrow (MIT) · no prebuilt release by choice — users run `./build.sh install`
+- README images (`docs/hero.png`, `docs/demo.gif`, `docs/social-preview.png`) are rendered from the app's real `arrowPath`/`ArrowView` code over a mock slide (renderer lives in session scratchpad, not committed). **Re-render them when the arrow look changes.**

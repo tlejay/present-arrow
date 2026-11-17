@@ -9,7 +9,7 @@ APP="build/Present Arrow.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
-swiftc -O -swift-version 5 -target arm64-apple-macos13.0 \
+swiftc -O -swift-version 5 -target "$(uname -m)-apple-macos13.0" \
   -framework AppKit -framework ServiceManagement \
   Sources/main.swift -o "$APP/Contents/MacOS/PresentArrow"
 
