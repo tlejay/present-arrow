@@ -71,58 +71,25 @@ func arrowPath(from a: CGPoint, to b: CGPoint, width w: CGFloat) -> CGPath? {
 // MARK: - Overlay (one transparent click-through window per screen)
 
 final class ArrowView: NSView {
-    // Shadow layer (solid fill, gives depth) + gradient layer masked to the arrow
-    // that carries a soft band of light travelling from tail to head.
-    let shadowShape = CAShapeLayer()
-    let gradient = CAGradientLayer()
-    let mask = CAShapeLayer()
+    let shape = CAShapeLayer()
 
     override init(frame: NSRect) {
         super.init(frame: frame)
         wantsLayer = true
-        shadowShape.shadowColor = NSColor.black.cgColor
-        shadowShape.shadowOpacity = 0.4
-        shadowShape.shadowRadius = 5
-        shadowShape.shadowOffset = CGSize(width: 0, height: -2)
-        layer?.addSublayer(shadowShape)
-        gradient.type = .axial
-        gradient.mask = mask
-        layer?.addSublayer(gradient)
+        shape.shadowColor = NSColor.black.cgColor
+        shape.shadowOpacity = 0.4
+        shape.shadowRadius = 5
+        shape.shadowOffset = CGSize(width: 0, height: -2)
+        layer?.addSublayer(shape)
     }
     required init?(coder: NSCoder) { fatalError() }
 
-    /// `phase` 0...1 = position of the light band along the arrow (0 = tail, 1 = head).
-    func update(path: CGPath?, tail: CGPoint, head: CGPoint, color: NSColor, phase: CGFloat) {
+    func update(path: CGPath?, color: NSColor) {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-        defer { CATransaction.commit() }
-
-        shadowShape.path = path
-        guard let path else { mask.path = nil; return }
-        shadowShape.fillColor = color.cgColor
-
-        let box = path.boundingBoxOfPath.insetBy(dx: -2, dy: -2)
-        gradient.frame = box
-        var t = CGAffineTransform(translationX: -box.minX, y: -box.minY)
-        mask.path = path.copy(using: &t)
-
-        // Gradient axis runs tail -> head, in the layer's unit coordinate space.
-        func unit(_ p: CGPoint) -> CGPoint {
-            CGPoint(x: (p.x - box.minX) / box.width, y: (p.y - box.minY) / box.height)
-        }
-        gradient.startPoint = unit(tail)
-        gradient.endPoint = unit(head)
-
-        let base = color.usingColorSpace(.sRGB) ?? color
-        let light = base.blended(withFraction: 0.75, of: .white) ?? .white
-        let mid = base.blended(withFraction: 0.35, of: .white) ?? base
-        gradient.colors = [base, base, mid, light, mid, base, base].map { $0.cgColor }
-
-        // Band is ~35% of the arrow long; travels from fully before the tail to past the head.
-        let half: CGFloat = 0.18
-        let c = -half + phase * (1 + 2 * half)
-        gradient.locations = [0, c - half, c - half * 0.45, c, c + half * 0.45, c + half, 1]
-            .map { NSNumber(value: Double(min(max($0, 0), 1))) }
+        shape.path = path
+        shape.fillColor = color.cgColor
+        CATransaction.commit()
     }
 }
 
@@ -152,8 +119,6 @@ final class ArrowController {
     private var anchor: CGPoint?        // global coords where Option went down
     private var visible = false
     private let minDistance: CGFloat = 12 // ignore tiny moves (e.g. typing ⌥ shortcuts)
-    private let lightCycle: Double = 1.6  // seconds for the light to travel tail -> head
-    private var startTime: CFTimeInterval = 0
 
     init() {
         rebuildWindows()
@@ -194,15 +159,11 @@ final class ArrowController {
     private func draw(from a: CGPoint, to b: CGPoint) {
         let color = currentColor()
         let width = Prefs.thickness
-        if !visible { startTime = CACurrentMediaTime() }
-        let raw = ((CACurrentMediaTime() - startTime) / lightCycle).truncatingRemainder(dividingBy: 1)
-        let phase = CGFloat(raw * raw * (3 - 2 * raw)) // smoothstep easing
         for w in windows {
             let o = w.frame.origin
-            let tail = CGPoint(x: a.x - o.x, y: a.y - o.y)
-            let head = CGPoint(x: b.x - o.x, y: b.y - o.y)
-            let path = arrowPath(from: tail, to: head, width: width)
-            w.arrowView.update(path: path, tail: tail, head: head, color: color, phase: phase)
+            let path = arrowPath(from: CGPoint(x: a.x - o.x, y: a.y - o.y),
+                                 to: CGPoint(x: b.x - o.x, y: b.y - o.y), width: width)
+            w.arrowView.update(path: path, color: color)
             if !visible { w.orderFrontRegardless() }
         }
         visible = true
@@ -210,7 +171,7 @@ final class ArrowController {
 
     private func hide() {
         for w in windows {
-            w.arrowView.update(path: nil, tail: .zero, head: .zero, color: .clear, phase: 0)
+            w.arrowView.update(path: nil, color: .clear)
             w.orderOut(nil)
         }
         visible = false

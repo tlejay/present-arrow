@@ -12,6 +12,8 @@ Let go of Option and it's gone. Made for presenting and screen sharing on macOS.
 ![Swift](https://img.shields.io/badge/Swift-AppKit-F05138?logo=swift&logoColor=white)
 ![Dependencies: none](https://img.shields.io/badge/dependencies-none-blue)
 
+**[⬇ Download for macOS](https://github.com/tlejay/present-arrow/releases/latest/download/Present-Arrow.zip)**
+
 [What you get](#-what-you-get) · [See it in action](#-see-it-in-action) · [Install](#-install) · [How it works](#-how-it-works)
 
 </div>
@@ -22,7 +24,6 @@ Let go of Option and it's gone. Made for presenting and screen sharing on macOS.
 |---|---|
 | ⌥ **Hold to point** | Press Option where you want the tail. The arrow head follows your cursor until you let go. |
 | 🖱 **No clicking** | You only move the mouse, so nothing is dragged or selected in the app underneath. |
-| ✨ **Light trail** | A soft band of light runs from tail to head on a loop (about 1.6 s per pass), so viewers can tell which way it points. |
 | 🎨 **6 colors, 4 sizes** | Red, Yellow, Green, Blue, Pink, White. Thin, Medium, Thick, Huge. Pick them from the menu bar. |
 | 🖥 **Every display** | Works on every connected screen, every Space, and over full-screen apps. Viewers see it when you share your screen. |
 | 🙅 **Stays out of the way** | Click-through overlay. Ignores ⌥ combined with ⌘ ⌃ ⇧, and waits until the mouse moves 12 pt, so typing ⌥ characters won't flash an arrow. |
@@ -46,11 +47,23 @@ Let go of Option and it's gone. Made for presenting and screen sharing on macOS.
 | Freehand drawing, shapes, text, spotlight or zoom | A full screen-annotation app |
 | Viewers to just find your cursor | macOS **Shake mouse pointer to locate** or a bigger pointer in System Settings → Accessibility → Display |
 
-Present Arrow does one thing only. It doesn't draw, highlight or zoom, and it isn't signed or notarized by Apple (you build it yourself).
+Present Arrow does one thing only. It doesn't draw, highlight or zoom, and it isn't signed or notarized by Apple, so macOS asks you to confirm the first time you open it.
 
 ## 📦 Install
 
-You need macOS 13 or later and the Xcode Command Line Tools (`xcode-select --install`).
+Needs macOS 13 or later. Works on Apple Silicon and Intel.
+
+### Download
+
+1. Download **[Present-Arrow.zip](https://github.com/tlejay/present-arrow/releases/latest/download/Present-Arrow.zip)**, unzip it, and drag **Present Arrow** into **Applications**.
+2. Open it. The app isn't notarized by Apple, so macOS blocks it the first time. Go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
+3. An arrow icon shows up in the menu bar. That's it.
+
+Prefer the terminal? `xattr -dr com.apple.quarantine "/Applications/Present Arrow.app"` does the same as step 2.
+
+### Build it yourself
+
+You need the Xcode Command Line Tools (`xcode-select --install`).
 
 ```bash
 git clone https://github.com/tlejay/present-arrow.git
@@ -58,16 +71,14 @@ cd present-arrow
 ./build.sh install   # builds, copies to /Applications, launches
 ```
 
-An arrow icon shows up in the menu bar. That's it.
-
-- `./build.sh` only builds to `build/Present Arrow.app`.
+- `./build.sh` only builds to `build/Present Arrow.app`. `./build.sh zip` makes the universal zip used for releases.
 - To uninstall, choose **Quit Present Arrow** from the menu and delete `/Applications/Present Arrow.app`.
 
 ## 🛠 How it works
 
 - **Input:** a 120 Hz timer reads `NSEvent.modifierFlags` and `NSEvent.mouseLocation`. Reading them doesn't need any privacy permission, unlike global key event taps.
 - **Overlay:** one borderless, transparent, click-through `NSWindow` per screen at `.screenSaver` level, joined to all Spaces.
-- **Arrow:** a single `CGPath` (shaft + head) filled by a `CAGradientLayer`. The gradient axis runs tail → head, and its color stops slide along it to make the light trail. A plain shape layer underneath adds the drop shadow.
+- **Arrow:** a single `CGPath` (shaft + head) in a `CAShapeLayer` with a soft drop shadow, so it stays visible on light and dark backgrounds.
 - **Settings:** stored in `UserDefaults` (`com.madebytle.presentarrow`). Open at Login uses `SMAppService`.
 
 ```
