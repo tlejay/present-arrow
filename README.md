@@ -14,7 +14,7 @@ Let go of Option and it's gone. Made for presenting and screen sharing on macOS.
 
 **[⬇ Download for macOS](https://github.com/tlejay/present-arrow/releases/latest/download/Present-Arrow.zip)**
 
-[What you get](#-what-you-get) · [See it in action](#-see-it-in-action) · [Install](#-install) · [How it works](#-how-it-works)
+[What you get](#-what-you-get) · [See it in action](#-see-it-in-action) · [Sharing tips](#-sharing-in-zoom-meet-or-teams) · [Install](#-install) · [How it works](#-how-it-works)
 
 </div>
 
@@ -25,7 +25,7 @@ Let go of Option and it's gone. Made for presenting and screen sharing on macOS.
 | ⌥ **Hold to point** | Press Option where you want the tail. The arrow head follows your cursor until you let go. |
 | 🖱 **No clicking** | You only move the mouse, so nothing is dragged or selected in the app underneath. |
 | 🎨 **6 colors, 4 sizes** | Red, Yellow, Green, Blue, Pink, White. Thin, Medium, Thick, Huge. Pick them from the menu bar. |
-| 🖥 **Every display** | Works on every connected screen, every Space, and over full-screen apps. Viewers see it when you share your screen. |
+| 🖥 **Every display** | Works on every connected screen, every Space, and over full-screen apps. Viewers see it when you share a screen ([not a single window](#-sharing-in-zoom-meet-or-teams)). |
 | 🙅 **Stays out of the way** | Click-through overlay. Ignores ⌥ combined with ⌘ ⌃ ⇧, and waits until the mouse moves 12 pt, so typing ⌥ characters won't flash an arrow. |
 | 🔒 **No permissions** | No Accessibility or Input Monitoring prompt: the app only reads the modifier state and cursor position. |
 | 🚀 **Open at Login** | One click in the menu. |
@@ -38,6 +38,19 @@ Let go of Option and it's gone. Made for presenting and screen sharing on macOS.
 </div>
 
 <sub>Rendered with the app's own arrow-drawing code over a sample slide. The ⌥ badge shows when Option is held; the real app doesn't show it.</sub>
+
+## 📺 Sharing in Zoom, Meet or Teams
+
+The arrow is its own see-through window floating above everything else. Viewers see it only when you share something that includes it:
+
+| You share… | Viewers see the arrow? |
+|---|---|
+| **Entire screen / desktop** | ✅ Yes |
+| **Zoom → Advanced → Portion of Screen** | ✅ Yes, inside the green frame |
+| **One window or one app** (e.g. just Keynote) | ❌ No. The meeting app captures only that window. |
+| **One browser tab** (Meet / Teams in Chrome) | ❌ No, same reason |
+
+Got a second display? Put your slides there and share that display only. Your notes and chat stay private, and the arrow still shows.
 
 ## 🤔 Present Arrow or something else?
 

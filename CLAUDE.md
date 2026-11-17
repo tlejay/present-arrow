@@ -8,6 +8,7 @@ hold **⌥ Option** and move the mouse → an arrow is drawn from where Option w
 - Overlay = one transparent click-through window per screen, level `.screenSaver`
 - Only pure Option triggers (⌥+⌘/⌃/⇧ ignored); arrow appears after the mouse moves ≥12pt so ⌥ typing shortcuts don't flash it
 - Arrow is a solid fill + drop shadow (a travelling light-trail was tried and removed — Tle didn't like it)
+- Limitation: meeting apps' window-only/tab sharing can't see the overlay (separate window). Tle chose docs-only fix (menu hint + README table), not a mirror-window mode
 - Settings (UserDefaults, bundle id `com.madebytle.presentarrow`): enabled, color, thickness, Open at Login (SMAppService)
 
 ## Public repo + README

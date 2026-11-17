@@ -207,6 +207,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let hint = NSMenuItem(title: "Hold ⌥ Option + move mouse to point", action: nil, keyEquivalent: "")
         hint.isEnabled = false
         menu.addItem(hint)
+        // Window-only sharing captures just that window, so the overlay can't be seen.
+        let share = NSMenuItem(title: "Share your entire screen, not one window", action: nil, keyEquivalent: "")
+        share.isEnabled = false
+        menu.addItem(share)
         menu.addItem(.separator())
 
         let toggle = NSMenuItem(title: "Enabled", action: #selector(toggleEnabled), keyEquivalent: "")
